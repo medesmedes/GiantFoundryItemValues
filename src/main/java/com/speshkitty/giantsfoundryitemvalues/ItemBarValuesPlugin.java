@@ -16,7 +16,7 @@ import java.awt.Point;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Giant's Foundry Gear Values"
+		name = "Giants' Foundry Gear Values"
 )
 public class ItemBarValuesPlugin extends Plugin
 {
@@ -38,14 +38,14 @@ public class ItemBarValuesPlugin extends Plugin
 	protected void startUp() throws Exception
 	{
 		overlayManager.add(overlay);
-		log.info("Giant Foundry Bar Value started!");
+		log.info("Giants' Foundry Bar Value started!");
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
 		overlayManager.remove(overlay);
-		log.info("Giant Foundry Bar Value stopped!");
+		log.info("Giants' Foundry Bar Value stopped!");
 	}
 
 	protected Logger getLogger(){
