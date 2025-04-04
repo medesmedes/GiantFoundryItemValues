@@ -22,8 +22,7 @@ public class ItemBarValuesOverlay extends WidgetItemOverlay {
     private final HashMap<Integer, Integer> itemBarValues = new HashMap<>();
 
     @Inject
-    ItemBarValuesOverlay(ItemBarValuesPlugin itemBarValuesPlugin, ItemBarValuesConfig config, ItemManager itemManager)
-    {
+    ItemBarValuesOverlay(ItemBarValuesPlugin itemBarValuesPlugin, ItemBarValuesConfig config, ItemManager itemManager) {
         this.itemBarValuesPlugin = itemBarValuesPlugin;
         this.config = config;
         this.log = itemBarValuesPlugin.getLogger();
@@ -34,7 +33,7 @@ public class ItemBarValuesOverlay extends WidgetItemOverlay {
         InputItems();
     }
 
-    private void InputItems(){
+    private void InputItems() {
         //region BRONZE
         itemBarValues.put(ItemID.BRONZE_SCIMITAR, 1);
         itemBarValues.put(ItemID.BRONZE_LONGSWORD, 1);
@@ -129,11 +128,11 @@ public class ItemBarValuesOverlay extends WidgetItemOverlay {
 
     @Override
     public void renderItemOverlay(Graphics2D graphics, int itemId, WidgetItem widgetItem) {
-        if(!itemBarValuesPlugin.ShouldDrawInfo()) {
+        if (!itemBarValuesPlugin.ShouldDrawInfo()) {
             return;
         }
 
-        if(!itemBarValues.containsKey(itemId)) {
+        if (!itemBarValues.containsKey(itemId)) {
             return;
         }
 
@@ -142,32 +141,40 @@ public class ItemBarValuesOverlay extends WidgetItemOverlay {
         final Rectangle bounds = widgetItem.getCanvasBounds();
         final TextComponent textComponent = new TextComponent();
 
-        int xPos = 0;
-        int yPos = 0;
-
-        switch(config.priceDisplayMode()){
-            case TOP_LEFT:
-                xPos = bounds.x;
-                yPos = bounds.y + 10;
-                break;
-            case TOP_RIGHT:
-                xPos = bounds.x + bounds.width - 5;
-                yPos = bounds.y + 10;
-                break;
-            case BOTTOM_LEFT:
-                xPos = bounds.x;
-                yPos = bounds.y + bounds.height;
-                break;
-            case BOTTOM_RIGHT:
-                xPos = bounds.x + bounds.width - 5;
-                yPos = bounds.y + bounds.height;
-                break;
-        }
-        textComponent.setPosition(new Point(xPos, yPos));
-        textComponent.setText(String.valueOf(itemBarValues.get(itemId)));
-        textComponent.setColor(Color.WHITE);
+        String barValueText = createBarValueText(itemBarValues.get(itemId), widgetItem.getQuantity());
+        textComponent.setText(barValueText);
+        final Dimension dimension = textComponent.render(graphics);
+        Point point = createPoint(bounds, dimension);
+        textComponent.setPosition(point);
+        textComponent.setColor(config.textColor());
         textComponent.render(graphics);
+    }
 
+    public String createBarValueText(int itemBarValue, int quantity) {
+        String itemValueText = String.valueOf(itemBarValue);
+        int totalValue = itemBarValue * quantity;
+        String totalItemValueText = totalValue + "(" + itemBarValue + ")";
+        return config.showTotalValue() && quantity > 1 ? totalItemValueText : itemValueText;
+    }
+
+    public Point createPoint(Rectangle bounds, Dimension textDimension) {
+        final int xPos = (int) ((
+                config.textDisplayPosition() == DisplayPosition.BOTTOM_LEFT ||
+                        config.textDisplayPosition() == DisplayPosition.TOP_LEFT
+        )
+                ? bounds.getMinX()
+                : bounds.getMaxX() - textDimension.getWidth() - 5
+        );
+
+        final int yPos = (int) ((
+                config.textDisplayPosition() == DisplayPosition.TOP_LEFT ||
+                        config.textDisplayPosition() == DisplayPosition.TOP_RIGHT
+        )
+                ? bounds.getMinY() + textDimension.getHeight() - 2
+                : bounds.getMaxY()
+        );
+
+        return new Point(xPos, yPos);
     }
 
 }

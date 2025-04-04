@@ -1,8 +1,11 @@
 package com.speshkitty.giantsfoundryitemvalues;
 
+import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+
+import java.awt.*;
 
 @ConfigGroup("giants-foundry-item-values")
 public interface ItemBarValuesConfig extends Config {
@@ -25,11 +28,31 @@ public interface ItemBarValuesConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "showTotalValue",
+            name = "Show total bar value for an item stack",
+            description = "Shows the total bar value of an item stack"
+    )
+    default boolean showTotalValue() {
+        return false;
+    }
+
+    @ConfigItem(
             keyName = "displayPosition",
             name = "Display Position",
-            description = "The position the text is drawn"
+            description = "The position where the overlay text is drawn"
     )
-    default DisplayPosition priceDisplayMode() {
-        return DisplayPosition.TOP_RIGHT;
+    default DisplayPosition textDisplayPosition() {
+        return DisplayPosition.BOTTOM_RIGHT;
+    }
+
+    @Alpha
+    @ConfigItem(
+            position = 10,
+            keyName = "textColor",
+            name = "Text color",
+            description = "Color of the item value text."
+    )
+    default Color textColor() {
+        return Color.WHITE;
     }
 }
