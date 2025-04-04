@@ -29,8 +29,8 @@ public interface ItemBarValuesConfig extends Config {
 
     @ConfigItem(
             keyName = "showTotalValue",
-            name = "Show total bar value for an item stack",
-            description = "Shows the total bar value of an item stack"
+            name = "Show total bar value",
+            description = "Shows the total bar value of item stacks"
     )
     default boolean showTotalValue() {
         return false;
